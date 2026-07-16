@@ -1,8 +1,12 @@
 from fastapi import FastAPI
 
+from app.api import properties
+
 # El objeto central de la app: aquí se cuelgan los routers de cada feature
 # (properties, bookings, ...). El title es lo que se ve en la doc /docs.
 app = FastAPI(title="Stay Direct API")
+
+app.include_router(properties.router)
 
 
 @app.get("/health")
