@@ -1,10 +1,21 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
 
+from sqlmodel import SQLModel
+
+from app.db.session import engine
+from app.models.property import Property  # noqa: F401
 from app.api import properties
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    SQLModel.metadata.create_all(engine)
+    yield
 
 # El objeto central de la app: aquí se cuelgan los routers de cada feature
 # (properties, bookings, ...). El title es lo que se ve en la doc /docs.
-app = FastAPI(title="Stay Direct API")
+
+app = FastAPI(title="Stay Direct API", lifespan=lifespan)
 
 app.include_router(properties.router)
 

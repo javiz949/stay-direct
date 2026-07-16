@@ -7,7 +7,9 @@ services:
       POSTGRES_PASSWORD: stay_dev_password
       POSTGRES_DB: stay_direct
     ports:
-      - "5432:5432"
+      # host:contenedor — 5434 en el host para no chocar con el Postgres nativo
+      # (5432) ni con otros contenedores; adentro Postgres sigue en 5432.
+      - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
