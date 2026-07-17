@@ -31,3 +31,19 @@ class PropertyCreate(PropertyBase):
 class PropertyRead(PropertyBase):
     id: int
     created_at: datetime
+
+
+# Edición parcial: todos los campos opcionales. Si un campo no viene, no se toca;
+# si viene, se aplica su validación (un precio presente igual debe ser > 0).
+class PropertyUpdate(SQLModel):
+    title: str | None = Field(default=None, min_length=1, max_length=120)
+    description: str | None = Field(default=None, min_length=1)
+    city: str | None = Field(default=None, min_length=1)
+    neighborhood: str | None = Field(default=None, min_length=1)
+    address: str | None = Field(default=None, min_length=1)
+    property_type: str | None = Field(default=None, min_length=1)
+    max_guests: int | None = Field(default=None, gt=0, le=50)
+    bedrooms: int | None = Field(default=None, ge=0)
+    bathrooms: float | None = Field(default=None, gt=0)
+    price_per_night: Decimal | None = Field(default=None, gt=0, max_digits=10, decimal_places=2)
+    is_active: bool | None = None
