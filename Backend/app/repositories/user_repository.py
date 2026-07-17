@@ -12,3 +12,7 @@ def create(session: Session, user: User) -> User:
 
 def get_by_email(session: Session, email: str) -> User | None:
     return session.exec(select(User).where(User.email == email)).first()
+
+
+def get_by_id(session: Session, user_id: int) -> User | None:
+    return session.get(User, user_id)

@@ -2,8 +2,10 @@ from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 
+from app.api.deps import get_current_user
 from app.core.security import create_access_token
 from app.db.session import get_session
+from app.models.user import User
 from app.schemas.user import Token, UserCreate, UserRead
 from app.services import user_service
 
@@ -21,3 +23,8 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
     user = user_service.authenticate_user(session, form_data.username, form_data.password)
     token = create_access_token(subject=str(user.id), role=user.role)
     return Token(access_token=token)
+
+
+@router.get("/me", response_model=UserRead)
+def me(current_user: User = Depends(get_current_user)):
+    return current_user
