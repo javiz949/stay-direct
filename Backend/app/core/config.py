@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
 
+    admin_email: str
+    admin_password: str
+
     # ".env" es relativo al directorio de ejecución, no a este archivo:
     # por eso el backend siempre se corre desde Backend/.
     model_config = SettingsConfigDict(env_file=".env")

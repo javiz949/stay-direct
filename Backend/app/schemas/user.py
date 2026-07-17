@@ -3,6 +3,8 @@ from datetime import datetime
 from pydantic import EmailStr
 from sqlmodel import Field, SQLModel
 
+from app.models.roles import Role
+
 
 class UserCreate(SQLModel):
     email: EmailStr
@@ -13,7 +15,7 @@ class UserCreate(SQLModel):
 class UserRead(SQLModel):
     id: int
     email: EmailStr
-    role: str
+    role: Role
     is_active: bool
     created_at: datetime
 

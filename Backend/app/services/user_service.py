@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlmodel import Session
 
 from app.core.security import hash_password, verify_password
+from app.models.roles import Role
 from app.models.user import User
 from app.repositories import user_repository
 from app.schemas.user import UserCreate
@@ -15,7 +16,7 @@ def register_user(session: Session, data: UserCreate) -> User:
     user = User(
         email=data.email,
         hashed_password=hash_password(data.password),
-        role="guest",
+        role=Role.GUEST,
     )
     return user_repository.create(session, user)
 
