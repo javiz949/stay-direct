@@ -8,3 +8,9 @@ psycopg[binary]==3.3.4
 pydantic-settings==2.14.2
 # TestClient de FastAPI lo necesita para pruebas.
 httpx==0.28.1
+# Auth: hash de contraseñas, tokens JWT, y lectura del form de login.
+bcrypt==5.0.0
+pyjwt==2.13.0
+python-multipart==0.0.32
+# EmailStr de Pydantic lo necesita para validar formato de email.
+email-validator==2.3.0

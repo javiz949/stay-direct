@@ -5,7 +5,8 @@ from sqlmodel import SQLModel
 
 from app.db.session import engine
 from app.models.property import Property  # noqa: F401
-from app.api import properties
+from app.models.user import User  # noqa: F401
+from app.api import auth, properties
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -17,6 +18,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Stay Direct API", lifespan=lifespan)
 
+app.include_router(auth.router)
 app.include_router(properties.router)
 
 
