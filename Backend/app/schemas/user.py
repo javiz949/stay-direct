@@ -16,3 +16,8 @@ class UserRead(SQLModel):
     role: str
     is_active: bool
     created_at: datetime
+
+
+class Token(SQLModel):
+    access_token: str
+    token_type: str = "bearer"
