@@ -4,9 +4,10 @@ from contextlib import asynccontextmanager
 from sqlmodel import SQLModel
 
 from app.db.session import engine
+from app.models.booking import Booking  # noqa: F401
 from app.models.property import Property  # noqa: F401
 from app.models.user import User  # noqa: F401
-from app.api import auth, properties
+from app.api import auth, bookings, properties
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,6 +21,7 @@ app = FastAPI(title="Stay Direct API", lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(properties.router)
+app.include_router(bookings.router)
 
 
 @app.get("/health")
