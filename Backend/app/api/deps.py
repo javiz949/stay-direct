@@ -19,12 +19,13 @@ def get_current_user(
 ) -> User:
     try:
         payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
-        user_id = payload.get("sub")
-    except jwt.InvalidTokenError:
+        user_id = int(payload.get("sub"))
+    except (jwt.InvalidTokenError, TypeError, ValueError):
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    user = user_repository.get_by_id(session, int(user_id))
-    if user is None:
+    user = user_repository.get_by_id(session, user_id)
+    # Inexistente o desactivado: el token no sirve para entrar.
+    if user is None or not user.is_active:
         raise HTTPException(status_code=401, detail="Invalid token")
     return user
 

@@ -16,7 +16,7 @@ def seed_admin() -> None:
             return
 
         admin = User(
-            email=settings.admin_email,
+            email=settings.admin_email.lower(),
             hashed_password=hash_password(settings.admin_password),
             role=Role.ADMIN,
         )
