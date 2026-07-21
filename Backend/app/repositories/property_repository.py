@@ -14,7 +14,8 @@ def create(session: Session, property: Property) -> Property:
 
 
 def get_all(session: Session) -> list[Property]:
-    return list(session.exec(select(Property)).all())
+    # Solo activas: el catalogo publico no muestra propiedades con borrado suave.
+    return list(session.exec(select(Property).where(Property.is_active == True)).all())
 
 
 # None cuando el id no existe; el service lo traducirá a 404.

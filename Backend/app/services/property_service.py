@@ -18,8 +18,8 @@ def list_properties(session: Session) -> list[Property]:
 
 def get_property(session: Session, property_id: int) -> Property:
     property = property_repository.get_by_id(session, property_id)
-    # El repo reporta el None; la decisión de que eso es un 404 es del service.
-    if property is None:
+    # Inexistente o con borrado suave: para la API "no existe" -> 404.
+    if property is None or not property.is_active:
         raise HTTPException(status_code=404, detail="Property not found")
     return property
 
