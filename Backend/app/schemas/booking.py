@@ -18,6 +18,12 @@ class BookingCreate(SQLModel):
     def check_dates(self):
         if self.check_out <= self.check_in:
             raise ValueError("check_out must be after check_in")
+        if self.check_in < date.today():
+            raise ValueError("check_in cannot be in the past")
+        # Tope de noches: corta estancias absurdas antes de calcular el precio,
+        # evitando el overflow de NUMERIC(10,2) que reventaría en un 500.
+        if (self.check_out - self.check_in).days > 365:
+            raise ValueError("stay cannot exceed 365 nights")
         return self
 
 
