@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from sqlmodel import SQLModel
@@ -18,6 +19,16 @@ async def lifespan(app: FastAPI):
 # (properties, bookings, ...). El title es lo que se ve en la doc /docs.
 
 app = FastAPI(title="Stay Direct API", lifespan=lifespan)
+
+# CORS: solo el frontend (Next.js en dev) puede llamar la API desde el navegador.
+# Lista explicita, sin comodin "*", porque viajan tokens en las peticiones.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(auth.router)
 app.include_router(properties.router)
