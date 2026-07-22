@@ -2,7 +2,9 @@ from datetime import datetime, timezone
 from decimal import Decimal
 
 from sqlalchemy import Column, DateTime
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, Relationship, SQLModel
+
+from app.models.amenity import Amenity, PropertyAmenity
 
 
 class Property(SQLModel, table=True):
@@ -34,3 +36,6 @@ class Property(SQLModel, table=True):
         default_factory=lambda: datetime.now(timezone.utc),
         sa_column=Column(DateTime(timezone=True), nullable=False),
     )
+
+    # Amenidades (muchos-a-muchos vía la tabla puente): property.amenities da la lista.
+    amenities: list["Amenity"] = Relationship(back_populates="properties", link_model=PropertyAmenity)
