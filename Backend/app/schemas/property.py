@@ -3,6 +3,8 @@ from decimal import Decimal
 
 from sqlmodel import Field, SQLModel
 
+from app.schemas.amenity import AmenityRead
+
 
 # Sin table=True: no es una tabla, es el contrato de datos que valida la API.
 # Campos que el cliente sí manda (todos menos id y created_at).
@@ -31,6 +33,8 @@ class PropertyCreate(PropertyBase):
 class PropertyRead(PropertyBase):
     id: int
     created_at: datetime
+    # Lista de amenidades de la propiedad (viene del M2M). [] si no tiene.
+    amenities: list[AmenityRead] = []
 
 
 # Edición parcial: todos los campos opcionales. Si un campo no viene, no se toca;
