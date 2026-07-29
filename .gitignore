@@ -8,11 +8,11 @@ node_modules/
 dist/
 build/
 # Datos crudos del ML (grandes, reproducibles desde Inside Airbnb — no se versionan)
-Backend/app/ml/data/*.csv
-Backend/app/ml/data/*.csv.gz
+MLService/data/*.csv
+MLService/data/*.csv.gz
 # Checkpoints de Jupyter
 .ipynb_checkpoints/
 # Notebooks de experimentos personales (locales, no se versionan)
-Backend/app/ml/sandbox/
+MLService/sandbox/
 # Imágenes de apoyo local (no se versionan)
-Backend/app/ml/images/
+MLService/images/
