@@ -1,0 +1,9 @@
+fastapi==0.139.0
+# starlette fijado por la misma razon que en el backend: pip llega a jalar la
+# serie 1.x, que rompe cosas en silencio.
+starlette==0.46.2
+uvicorn[standard]==0.51.0
+# ML: features (pandas) + modelo y metricas (scikit-learn). joblib viene con sklearn.
+pandas==3.0.3
+scikit-learn==1.9.0
+numpy==2.5.1
