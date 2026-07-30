@@ -1,0 +1,10 @@
+# Solo app/ y artifacts/ entran a la imagen. Los datos crudos (18 MB), los
+# notebooks y el sandbox no hacen falta en tiempo de ejecución.
+data/
+notebooks/
+sandbox/
+images/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/

@@ -1,0 +1,7 @@
+# El .env queda fuera de la imagen: sus valores apuntan a localhost y trae
+# secretos. Las variables se inyectan desde docker-compose.
+.env
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/

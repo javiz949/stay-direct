@@ -1,3 +1,6 @@
+# Cada servicio es un contenedor aparte, con su propio sistema de archivos y su
+# proceso. Se comunican por la red interna de Docker llamándose por NOMBRE de
+# servicio (db, ml-service-1, ...), no por IP: eso lo resuelve el DNS de Docker.
 services:
   db:
     image: postgres:16
@@ -17,6 +20,59 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  # Dos réplicas del servicio de precios: el backend reparte el cálculo entre
+  # ellas y sigue funcionando si una se cae. Misma imagen, contenedores distintos.
+  ml-service-1:
+    build: ./MLService
+    container_name: stay-direct-ml-1
+    # Sin 'ports': no se expone al host. Solo el backend le habla, por la red
+    # interna. Menos superficie expuesta.
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  ml-service-2:
+    build: ./MLService
+    container_name: stay-direct-ml-2
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8001/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  backend:
+    build: ./Backend
+    container_name: stay-direct-backend
+    ports:
+      - "8000:8000"
+    # Los secretos (JWT_SECRET, ADMIN_*) se reutilizan del .env del backend.
+    env_file:
+      - ./Backend/.env
+    # 'environment' pisa lo que venga del env_file: dentro de Docker la base y el
+    # servicio de ML no están en localhost, sino en sus nombres de servicio.
+    environment:
+      DATABASE_URL: postgresql+psycopg://stay:stay_dev_password@db:5432/stay_direct
+      ML_SERVICE_URLS: http://ml-service-1:8001,http://ml-service-2:8001
+      ML_TIMEOUT_SECONDS: "2.0"
+      ML_FAILURE_THRESHOLD: "3"
+      ML_RECOVERY_SECONDS: "30.0"
+    depends_on:
+      db:
+        # Espera a que Postgres acepte conexiones, no solo a que el contenedor
+        # exista: si no, el backend arranca antes y truena al crear las tablas.
+        condition: service_healthy
+      # Las réplicas del ML no son condition: service_healthy a propósito. El
+      # backend debe poder arrancar aunque el ML no esté listo: para eso existe
+      # la estimación de respaldo.
+      ml-service-1:
+        condition: service_started
+      ml-service-2:
+        condition: service_started
 
 volumes:
   pgdata:
