@@ -11,6 +11,7 @@ import type {
   PriceSuggestion,
   PriceSuggestionRequest,
   Property,
+  PropertyAvailability,
   PropertyCreate,
   PropertyUpdate,
   Token,
@@ -142,11 +143,17 @@ export const api = {
     });
   },
 
+  // PUT, no PATCH: es el verbo que expone el Backend para editar.
   updateProperty(id: number, data: PropertyUpdate): Promise<Property> {
     return request<Property>(`/properties/${id}`, {
-      method: "PATCH",
+      method: "PUT",
       body: JSON.stringify(data),
     });
+  },
+
+  /** Fechas ocupadas de una propiedad. Público: no requiere sesión. */
+  getAvailability(id: number): Promise<PropertyAvailability> {
+    return request<PropertyAvailability>(`/properties/${id}/availability`);
   },
 
   deleteProperty(id: number): Promise<void> {

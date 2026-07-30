@@ -67,7 +67,7 @@ function PropertyCard({ property }: { property: Property }) {
       {/* Toda la tarjeta es el enlace: es el area clickeable obvia, en vez de
           esperar que el usuario adivine que el titulo es un link. */}
       <Link
-        href={`/propiedades/${property.id}`}
+        href={`/properties/${property.id}`}
         className="flex h-full flex-col rounded-xl border border-neutral-200 p-5 transition-colors hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:hover:border-neutral-600"
       >
         <h2 className="font-semibold leading-snug">{property.title}</h2>

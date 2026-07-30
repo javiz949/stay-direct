@@ -24,3 +24,37 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Estilos del calendario de disponibilidad (ver availability-calendar.tsx).
+
+   Van aquí como CSS plano y no como utilidades de Tailwind porque Tailwind
+   traduce los "_" de los selectores arbitrarios a espacios, y las clases de
+   react-day-picker llevan guión bajo literal (rdp-day_button). */
+
+/* El fondo de los días intermedios del rango tapaba los números: el que trae la
+   librería es casi blanco y opaco. Se cambia por un tinte translúcido, así se
+   ve la banda de la selección pero los números conservan el color del tema y
+   siguen legibles. Con esto el color del texto no hay que tocarlo: el "inherit"
+   que trae la librería ya funciona en los dos modos.
+
+   El selector lleva las dos clases a propósito. La hoja de la librería carga
+   DESPUÉS de este archivo y define la misma variable en .rdp-root, así que con
+   una sola clase empatan en especificidad y gana ella por orden. */
+.booking-calendar.rdp-root {
+  --rdp-range_middle-background-color: rgb(0 0 0 / 7%);
+}
+
+@media (prefers-color-scheme: dark) {
+  .booking-calendar.rdp-root {
+    --rdp-range_middle-background-color: rgb(255 255 255 / 12%);
+  }
+}
+
+/* Los días ya reservados se tachan para distinguirlos de los días pasados, que
+   también están bloqueados pero no son lo mismo para quien mira. Se excluye el
+   final del rango: ahí el tachado confundiría, porque sí es una salida válida.
+   El tachado va en el botón y no en la celda: los controles de formulario no
+   siempre heredan text-decoration del padre. */
+.rdp-booked:not(.rdp-range_end) .rdp-day_button {
+  text-decoration: line-through;
+}

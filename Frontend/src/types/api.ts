@@ -65,6 +65,19 @@ export interface Booking {
   created_at: string;
 }
 
+// Rango de fechas ocupado. No trae datos del huésped a propósito: es información
+// pública y no debe revelar quién se hospeda dónde.
+export interface UnavailableRange {
+  check_in: string; // "YYYY-MM-DD"
+  check_out: string;
+}
+
+export interface PropertyAvailability {
+  property_id: number;
+  since: string;
+  unavailable: UnavailableRange[];
+}
+
 export interface UserCreate {
   email: string;
   password: string;

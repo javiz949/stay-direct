@@ -20,9 +20,13 @@ export function Header() {
               parpadee "Iniciar sesión" a alguien que sí tiene sesión. */}
           {loading ? null : user ? (
             <>
-              <Link href="/reservas" className="text-neutral-500 hover:text-current">
-                Mis reservas
-              </Link>
+              {/* El admin no puede reservar, así que su lista estaría siempre
+                  vacía: se le oculta el enlace. */}
+              {!isAdmin && (
+                <Link href="/bookings" className="text-neutral-500 hover:text-current">
+                  Mis reservas
+                </Link>
+              )}
               {isAdmin && (
                 <Link href="/admin" className="text-neutral-500 hover:text-current">
                   Administrar

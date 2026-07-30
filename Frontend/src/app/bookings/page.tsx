@@ -24,7 +24,7 @@ export default function BookingsPage() {
   const { user, loading: authLoading } = useAuth();
   const searchParams = useSearchParams();
   // Id que viene del formulario de reserva, para resaltar la recién creada.
-  const newBookingId = Number(searchParams.get("nueva"));
+  const newBookingId = Number(searchParams.get("new"));
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
@@ -117,7 +117,7 @@ export default function BookingsPage() {
               <div>
                 <p className="text-sm text-neutral-500">Reserva #{booking.id}</p>
                 <Link
-                  href={`/propiedades/${booking.property_id}`}
+                  href={`/properties/${booking.property_id}`}
                   className="text-sm underline hover:text-current"
                 >
                   Ver propiedad

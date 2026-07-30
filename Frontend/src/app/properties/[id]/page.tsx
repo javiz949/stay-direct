@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 
 import { BookingForm } from "@/components/booking-form";
 import { api, ApiError } from "@/lib/api";
-import type { Property } from "@/types/api";
+import type { Property, PropertyAvailability } from "@/types/api";
 
 /**
  * Detalle de una propiedad, con el formulario de reserva.
@@ -29,6 +29,15 @@ export default async function PropertyPage({
     // El Backend responde 404 tanto si no existe como si está desactivada.
     if (e instanceof ApiError && e.status === 404) notFound();
     throw e;
+  }
+
+  // Si falla, el calendario no bloquea nada y el Backend sigue rechazando con
+  // 409: la página se degrada en vez de caerse.
+  let availability: PropertyAvailability | null = null;
+  try {
+    availability = await api.getAvailability(propertyId);
+  } catch {
+    availability = null;
   }
 
   return (
@@ -78,6 +87,7 @@ export default async function PropertyPage({
           propertyId={property.id}
           pricePerNight={Number(property.price_per_night)}
           maxGuests={property.max_guests}
+          unavailable={availability?.unavailable ?? []}
         />
       </div>
     </main>
