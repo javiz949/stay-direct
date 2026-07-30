@@ -3,6 +3,7 @@ from sqlmodel import Session
 
 from app.api.deps import require_admin
 from app.db.session import get_session
+from app.schemas.availability import PropertyAvailability
 from app.schemas.property import PropertyCreate, PropertyRead, PropertyUpdate
 from app.services import property_service
 
@@ -23,6 +24,13 @@ def list_properties(session: Session = Depends(get_session)):
 @router.get("/{property_id}", response_model=PropertyRead)
 def get_property(property_id: int, session: Session = Depends(get_session)):
     return property_service.get_property(session, property_id)
+
+
+# Público como el resto de las lecturas: quien navega el catálogo necesita ver la
+# disponibilidad antes de decidir. Solo devuelve fechas, no de quién son.
+@router.get("/{property_id}/availability", response_model=PropertyAvailability)
+def get_availability(property_id: int, session: Session = Depends(get_session)):
+    return property_service.get_availability(session, property_id)
 
 
 # PUT lleva el id en la ruta: edita una propiedad que ya existe.

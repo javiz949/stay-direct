@@ -35,3 +35,12 @@ def require_admin(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != Role.ADMIN:
         raise HTTPException(status_code=403, detail="Admin access required")
     return current_user
+
+
+# Simétrico a require_admin: reservar es de huéspedes. El admin es dueño de todas
+# las propiedades del portafolio, así que no existe ninguna que pudiera reservar
+# como huésped; la restricción por rol equivale aquí a la de "no reservar lo tuyo".
+def require_guest(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != Role.GUEST:
+        raise HTTPException(status_code=403, detail="Only guests can book")
+    return current_user

@@ -1,8 +1,11 @@
+from datetime import date
+
 from fastapi import HTTPException
 from sqlmodel import Session
 
 from app.models.property import Property
-from app.repositories import property_repository
+from app.repositories import booking_repository, property_repository
+from app.schemas.availability import PropertyAvailability, UnavailableRange
 from app.schemas.property import PropertyCreate, PropertyUpdate
 
 
@@ -38,3 +41,25 @@ def delete_property(session: Session, property_id: int) -> Property:
     property = get_property(session, property_id)
     property.is_active = False
     return property_repository.update(session, property)
+
+
+def get_availability(session: Session, property_id: int) -> PropertyAvailability:
+    """Fechas ocupadas de una propiedad, para que el cliente no ofrezca días que
+    van a ser rechazados.
+
+    Devuelve solo rangos de fechas: nunca el huésped ni el id de la reserva. Es
+    información pública, así que no debe revelar quién se hospeda dónde.
+    """
+    # Reusa get_property: si no existe o está desactivada, lanza el 404.
+    get_property(session, property_id)
+
+    today = date.today()
+    bookings = booking_repository.get_active_by_property(session, property_id, since=today)
+
+    return PropertyAvailability(
+        property_id=property_id,
+        since=today,
+        unavailable=[
+            UnavailableRange(check_in=b.check_in, check_out=b.check_out) for b in bookings
+        ],
+    )
