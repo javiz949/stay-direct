@@ -16,5 +16,3 @@ MLService/data/*.csv.gz
 MLService/sandbox/
 # Imágenes de apoyo local (no se versionan)
 MLService/images/
-# Documentación personal del autor (no se versiona)
-docs/
