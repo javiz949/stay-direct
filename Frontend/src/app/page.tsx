@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { api, ApiError } from "@/lib/api";
 import type { Property } from "@/types/api";
 
@@ -61,8 +63,12 @@ export default async function Home() {
 
 function PropertyCard({ property }: { property: Property }) {
   return (
-    <li className="flex flex-col rounded-xl border border-neutral-200 p-5 transition-shadow hover:shadow-md">
-      <h2 className="font-semibold leading-snug">{property.title}</h2>
+    <li className="flex flex-col rounded-xl border border-neutral-200 p-5 transition-shadow hover:shadow-md dark:border-neutral-800">
+      <h2 className="font-semibold leading-snug">
+        <Link href={`/propiedades/${property.id}`} className="hover:underline">
+          {property.title}
+        </Link>
+      </h2>
 
       <p className="mt-1 text-sm text-neutral-500">
         {property.neighborhood}, {property.city}

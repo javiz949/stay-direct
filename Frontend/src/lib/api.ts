@@ -162,6 +162,12 @@ export const api = {
     });
   },
 
+  /** Solo las reservas del usuario del token: el Backend filtra por guest_id,
+   *  el frontend no puede pedir las de alguien más. */
+  listMyBookings(): Promise<Booking[]> {
+    return request<Booking[]>("/bookings");
+  },
+
   cancelBooking(id: number): Promise<Booking> {
     return request<Booking>(`/bookings/${id}/cancel`, { method: "POST" });
   },
