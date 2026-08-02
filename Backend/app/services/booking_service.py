@@ -12,6 +12,11 @@ def create_booking(session: Session, data: BookingCreate, guest_id: int) -> Book
     if property is None or not property.is_active:
         raise HTTPException(status_code=404, detail="Property not found")
 
+    # Antes de consultar, no despues: la ventana de riesgo es justo el chequeo de
+    # traslape. De aqui al commit nadie mas puede reservar esta propiedad, asi
+    # que las peticiones simultaneas se atienden de una en una.
+    booking_repository.lock_property(session, data.property_id)
+
     overlapping = booking_repository.get_overlapping(
         session, data.property_id, data.check_in, data.check_out
     )

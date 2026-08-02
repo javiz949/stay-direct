@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+/* Por defecto Tailwind activa las utilidades dark: segun la preferencia del
+   sistema operativo. Aqui se atan a una clase .dark que nadie pone, asi que
+   quedan inertes y la interfaz es siempre clara. Se hace en un solo lugar en
+   vez de borrar las ~38 utilidades dark: de los componentes: si algun dia se
+   quiere un selector de tema, basta con poner la clase en el <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -10,13 +17,6 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
@@ -42,12 +42,6 @@ body {
    una sola clase empatan en especificidad y gana ella por orden. */
 .booking-calendar.rdp-root {
   --rdp-range_middle-background-color: rgb(0 0 0 / 7%);
-}
-
-@media (prefers-color-scheme: dark) {
-  .booking-calendar.rdp-root {
-    --rdp-range_middle-background-color: rgb(255 255 255 / 12%);
-  }
 }
 
 /* Los días ya reservados se tachan para distinguirlos de los días pasados, que
