@@ -9,7 +9,7 @@ from app.models.amenity import Amenity, PropertyAmenity  # noqa: F401
 from app.models.booking import Booking  # noqa: F401
 from app.models.property import Property  # noqa: F401
 from app.models.user import User  # noqa: F401
-from app.api import auth, bookings, pricing, properties
+from app.api import amenities, auth, bookings, pricing, properties
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -35,6 +35,7 @@ app.include_router(auth.router)
 app.include_router(properties.router)
 app.include_router(bookings.router)
 app.include_router(pricing.router)
+app.include_router(amenities.router)
 
 
 @app.get("/health")

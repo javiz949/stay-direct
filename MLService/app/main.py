@@ -92,6 +92,11 @@ def predict(property_in: PropertyIn) -> PredictionOut:
             detail=f"Unknown room_type: {property_in.room_type}",
         )
 
+    # Coordenadas ausentes: se usa el centroide de la alcaldía. La alcaldía ya
+    # se validó arriba, así que el acceso al catálogo es seguro.
+    if property_in.latitude is None or property_in.longitude is None:
+        property_in.latitude, property_in.longitude = features.CENTROIDS[property_in.neighborhood]
+
     row = pd.DataFrame([{
         "accommodates": property_in.accommodates,
         "bedrooms": property_in.bedrooms,

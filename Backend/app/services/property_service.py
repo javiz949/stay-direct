@@ -4,14 +4,21 @@ from fastapi import HTTPException
 from sqlmodel import Session
 
 from app.models.property import Property
-from app.repositories import booking_repository, property_repository
+from app.repositories import amenity_repository, booking_repository, property_repository
 from app.schemas.availability import PropertyAvailability, UnavailableRange
 from app.schemas.property import PropertyCreate, PropertyUpdate
 
 
 def create_property(session: Session, data: PropertyCreate) -> Property:
-    # Traduce el schema de entrada al model que persiste el repo.
-    property = Property(**data.model_dump())
+    # Los ids de amenidades no son columnas de Property: se sacan del dump y se
+    # resuelven contra el catálogo antes de armar el model.
+    amenities = amenity_repository.get_by_ids(session, data.amenity_ids)
+    if len(amenities) != len(set(data.amenity_ids)):
+        # Algún id no existe: error de validación, con 422 como el resto.
+        raise HTTPException(status_code=422, detail="Unknown amenity id")
+
+    property = Property(**data.model_dump(exclude={"amenity_ids"}))
+    property.amenities = amenities
     return property_repository.create(session, property)
 
 

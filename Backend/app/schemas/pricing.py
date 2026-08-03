@@ -1,24 +1,24 @@
 from sqlmodel import Field, SQLModel
 
 
-# Contrato de entrada: lo que el administrador captura de la propiedad.
+# Contrato de entrada: lo que el administrador captura al publicar. Habla el
+# idioma de la plataforma (alcaldía, amenidades en español); traducirlo al
+# contrato del servicio de precios es trabajo del service, no del cliente.
 class PriceSuggestionRequest(SQLModel):
     accommodates: int = Field(ge=1, le=20)
     bedrooms: float = Field(ge=0, le=20)
     bathrooms: float = Field(ge=0, le=20)
-    beds: float = Field(ge=0, le=30)
 
-    # Rango de la Ciudad de México: el modelo solo aprendió de este mercado.
-    latitude: float = Field(ge=19.0, le=19.9)
-    longitude: float = Field(ge=-99.4, le=-98.9)
-
-    room_type: str
+    # Alcaldía de CDMX. Las coordenadas no se piden: el servicio de precios usa
+    # el centroide de la alcaldía, del que es dueño.
     neighborhood: str
 
+    # Nombres del catálogo propio (en español). El service traduce las que el
+    # modelo conoce y descarta el resto.
     amenities: list[str] = []
-    minimum_nights: int = Field(default=1, ge=1, le=365)
-    maximum_nights: int = Field(default=365, ge=1, le=1125)
-    bathroom_type: str = "private"
+
+    # Opcional: el admin no captura camas hoy; si falta, el service la aproxima.
+    beds: float | None = Field(default=None, ge=1, le=30)
 
 
 # Contrato de salida. `served_by` deja ver qué réplica atendió: sirve para

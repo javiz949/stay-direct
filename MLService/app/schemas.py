@@ -17,10 +17,13 @@ class PropertyIn(BaseModel):
     bathrooms: float = Field(ge=0, le=20, description="Número de baños")
     beds: float = Field(ge=0, le=30, description="Número de camas")
 
+    # Opcionales: si faltan, se usa el centroide de la alcaldía (ver main.py).
+    # Este servicio es el dueño de la geografía del modelo, así que el default
+    # vive aquí y no duplicado en el backend o el frontend.
     # Límites aproximados de la Ciudad de México: el modelo solo aprendió de CDMX,
     # así que una coordenada de otra ciudad daría una predicción sin sentido.
-    latitude: float = Field(ge=19.0, le=19.9)
-    longitude: float = Field(ge=-99.4, le=-98.9)
+    latitude: float | None = Field(default=None, ge=19.0, le=19.9)
+    longitude: float | None = Field(default=None, ge=-99.4, le=-98.9)
 
     room_type: str = Field(description=f"Uno de: {ROOM_TYPES}")
     neighborhood: str = Field(description="Alcaldía de CDMX")

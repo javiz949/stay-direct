@@ -23,10 +23,11 @@ class PropertyBase(SQLModel):
     is_active: bool = True
 
 
-# Lo que entra al crear. Vacía por ahora: hereda todo de la base. Existe para
-# alojar campos que solo apliquen al crear, sin ensuciar el contrato común.
+# Lo que entra al crear: la base más las amenidades, por id. Van como ids y no
+# como nombres porque el catálogo ya existe en la DB y el id es su referencia
+# estable (el nombre podría corregirse sin romper nada).
 class PropertyCreate(PropertyBase):
-    pass
+    amenity_ids: list[int] = []
 
 
 # Lo que sale al responder. id es int (no int | None): al devolverla ya lo tiene.

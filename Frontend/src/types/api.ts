@@ -34,6 +34,8 @@ export interface PropertyCreate {
   bathrooms: number;
   price_per_night: string;
   is_active?: boolean;
+  // Solo al crear: ids del catálogo de amenidades. La respuesta trae objetos.
+  amenity_ids?: number[];
 }
 
 // Lo que devuelve la API: los campos de creación más los que pone el servidor.
@@ -98,19 +100,15 @@ export interface Token {
 }
 
 // Sugerencia de precio: lo consulta el admin al publicar una propiedad.
+// Sin coordenadas ni room_type: eso lo resuelve el backend (centroide de la
+// alcaldía, renta de unidad completa). El frontend no hace lógica de negocio.
 export interface PriceSuggestionRequest {
   accommodates: number;
   bedrooms: number;
   bathrooms: number;
-  beds: number;
-  latitude: number;
-  longitude: number;
-  room_type: string;
   neighborhood: string;
-  amenities: string[];
-  minimum_nights?: number;
-  maximum_nights?: number;
-  bathroom_type?: string;
+  amenities: string[]; // nombres del catálogo propio, en español
+  beds?: number;
 }
 
 export interface PriceSuggestion {

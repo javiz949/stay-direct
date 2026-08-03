@@ -6,6 +6,7 @@
  */
 
 import type {
+  Amenity,
   Booking,
   BookingCreate,
   PriceSuggestion,
@@ -158,6 +159,11 @@ export const api = {
 
   deleteProperty(id: number): Promise<void> {
     return request<void>(`/properties/${id}`, { method: "DELETE" });
+  },
+
+  /** Catálogo de amenidades, para el formulario de crear propiedad. */
+  listAmenities(): Promise<Amenity[]> {
+    return request<Amenity[]>("/amenities");
   },
 
   // ---------- Reservas ----------

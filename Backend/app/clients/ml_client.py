@@ -29,6 +29,21 @@ class MLServiceUnavailable(Exception):
     """Ninguna réplica pudo atender la petición."""
 
 
+class MLBadRequest(Exception):
+    """El servicio respondió, pero rechazó los datos enviados (4xx).
+
+    Es una excepción distinta de MLServiceUnavailable a propósito: aquí el
+    servicio está sano y el problema es la petición. Confundirlas haría que el
+    usuario reciba "servicio no disponible" cuando lo que hay es un dato mal
+    capturado, que sí puede corregir.
+    """
+
+    def __init__(self, status_code: int, detail: str) -> None:
+        super().__init__(detail)
+        self.status_code = status_code
+        self.detail = detail
+
+
 class _ReplicaState:
     """Salud de una réplica: fallos seguidos y hasta cuándo está fuera de rotación."""
 
@@ -113,7 +128,11 @@ class MLClient:
             # daría el mismo error, así que no la penalizamos ni seguimos.
             if 400 <= response.status_code < 500:
                 state.record_success()
-                raise MLServiceUnavailable(f"Petición rechazada ({response.status_code})")
+                try:
+                    detail = response.json().get("detail", "")
+                except ValueError:
+                    detail = ""
+                raise MLBadRequest(response.status_code, str(detail) or "Invalid request")
 
             # 5xx sí es problema de la réplica.
             state.record_failure(self.failure_threshold, self.recovery_seconds)
